@@ -5,7 +5,7 @@ import '../widgets/app_drawer.dart';
 // import '../widgets/product_item.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
-// import '../providers/products.dart';
+import '../providers/products.dart';
 import '../providers/cart.dart';
 import '../screens/cart_screen.dart';
 // import '../screens/orders_screen.dart';
@@ -57,6 +57,40 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _initState = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    // Provider.of<Products>(context).fetchAndSetProducts();
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    // });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_initState) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      }).catchError((error) {
+        print('Error get data');
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _initState = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +142,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites),
     );
   }
 }
