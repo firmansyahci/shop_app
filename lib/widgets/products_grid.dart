@@ -22,10 +22,10 @@ class ProductsGrid extends StatelessWidget {
         // create: (c) => products[i],
         value: products[i],
         child: ProductItem(
-          // products[i].id,
-          // products[i].title,
-          // products[i].imageUrl,
-        ),
+            // products[i].id,
+            // products[i].title,
+            // products[i].imageUrl,
+            ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
